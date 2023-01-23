@@ -1,0 +1,28 @@
+.image-file{
+    align-items: center;
+    margin-top: 2%;
+    align-self: center;
+    color: aqua;
+    align-items: center;
+    margin-left: 27%;
+    margin-right: 27%;
+}
+label{
+    color: inherit;
+
+}
+input{
+    border: wheat;
+    color-scheme: dark;
+    color: inherit;
+}
+body{
+    margin: 7%;
+    align-items: center;
+    background-image: linear-gradient(to right,black,grey);
+}
+img{
+    /* margin-left: 36%; */
+    height: 80%;
+    width: 60%;
+}
