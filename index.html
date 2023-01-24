@@ -6,14 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Viewer</title>
     <link rel="stylesheet" href="styles/styles.css">
-    <script src="scripts/main.js"></script>
 </head>
 <body>
     <div class="image-file">
         <img src="images/image.png" alt="Image">
         <br>
         <label for="myImage">Select a file</label>
-        <input type="file" id="myImage" name="myImage" accept="image/*">
+        <input type="file" id="myImage" name="myImage" accept="image/*"><br>
+        <button id="image-view" type="button">Submit</button>
     </div>
+    <script src="scripts/main.js"></script>
+    <!-- adding <script></script> in body is better -->
 </body>
 </html>
