@@ -1,5 +1,5 @@
 let image=document.querySelector('img');
-let btn=document.querySelector('button');
+let btn=document.querySelector('button[id="image-submit"]');
 let nav=document.querySelector('nav');
 window.onload=function(){
     btn.addEventListener('click',() =>{
@@ -14,17 +14,19 @@ window.onload=function(){
             for(const file of curFiles){
                 const br=document.createElement('br');
                 nav.append(br);
-                const imgName =document.createElement('a');
+                const imgName =document.createElement('button');
+                imgName.className="nav-button";
                 imgName.textContent=file.name;
-                imgName.href=URL.createObjectURL(file);
+                imgName.value=URL.createObjectURL(file);
                 nav.appendChild(imgName);
                                 //Displaying image on click
-                let displayImg=document.querySelector('a[href="'+imgName.href+'"]');
+                let displayImg=document.querySelector('button[value="'+imgName.value+'"]');
+                console.log(displayImg);
                 if(displayImg){
                     displayImg.addEventListener('click',()=>{
                         console.log(displayImg);
                         console.log('Link Clicke');
-                        image.src=displayImg.href;
+                        image.src=displayImg.value;
                     });
                 }
             }
