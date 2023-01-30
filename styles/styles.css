@@ -4,8 +4,7 @@
     align-self: center;
     color: aqua;
     align-items: center;
-    margin-left: 27%;
-    margin-right: 27%;
+    margin-left: 20%;
 }
 label{
     color: inherit;
@@ -19,10 +18,32 @@ input{
 body{
     margin: 7%;
     align-items: center;
-    background-image: linear-gradient(to right,black,grey);
+    background-image: linear-gradient(to right,black,rgb(64, 58, 58));
 }
 img{
     /* margin-left: 36%; */
     height: 80%;
     width: 60%;
+}
+.navigation{
+    margin-top: 5%;
+    color: aqua;
+    top:0;
+    left:0;
+    width: 20%;
+    margin-left: 4%;
+    position: fixed;
+    /* important */
+}
+.nav-button{
+    background: none;
+    border: none;
+    text-decoration: underline;
+    cursor: pointer;
+    color: blueviolet;
+    text-align: left;
+    padding-bottom: 1px;
+}
+.nav-button:hover{
+    color: teal;
 }
