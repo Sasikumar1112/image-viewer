@@ -6,19 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Viewer</title>
     <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <nav class="navigation">
-        <label for="myImage">Select a file</label>
-        <input type="file" id="myImage" name="myImage" accept="image/*" multiple><br>
-        <button id="image-submit" type="button">Submit</button><br>
+    <nav class="navigation" >
+        <label for="inputImage"><img src="images/upload.png" alt="Upload Image"></label>
+        <input type="file" id="inputImage" name="inputImage" title="Upload images" accept="image/*" multiple/>
+        <p  ondrop="drop_handler(event);" ondragover="dragover_handler(event);">Drag and Drop here</p>
     </nav>
     <aside class="image-file">
-    <div >
-        <img src="images/image.png" alt="Image">
-    </div>
+        <button id="previous">&lt</button>
+        <img id="display-image"src="images/image.png" alt="Image">
+        <button id="next">&gt</button>
     </aside>
-
+    <div class="slide">
+    </div>
     <script src="scripts/main.js"></script>
     <!-- adding <script></script> in body is better -->
 </body>
