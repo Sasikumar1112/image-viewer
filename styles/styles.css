@@ -4,36 +4,47 @@
     align-self: center;
     color: aqua;
     align-items: center;
-    margin-left: 20%;
+    margin-left: 23%;
+    height: 70%;
+    width: 60%;
 }
-label{
-    color: inherit;
 
-}
 input{
     border: wheat;
     color-scheme: dark;
     color: inherit;
 }
 body{
-    margin: 7%;
+    margin: 3%;
     align-items: center;
     background-image: linear-gradient(to right,black,rgb(64, 58, 58));
 }
-img{
+nav  label>img{
     /* margin-left: 36%; */
-    height: 80%;
-    width: 60%;
+    height: 30%;
+    width: 97%;
 }
 .navigation{
+    height: 390px;
     margin-top: 5%;
-    color: aqua;
+    margin-bottom: 10px;
+    color: rgb(87, 116, 116);
     top:0;
     left:0;
-    width: 20%;
-    margin-left: 4%;
+    width: 10%;
+    margin-left: 5%;
+    margin-right: 6%;
     position: fixed;
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* align-items: center; */
+    text-align: center;
     /* important */
+}
+.navigation p{
+    padding: 27px;
+    border: solid 2px;
+    border-color: gray;
 }
 .nav-button{
     background: none;
@@ -46,4 +57,64 @@ img{
 }
 .nav-button:hover{
     color: teal;
+}
+.nav-button:active{
+    color:chartreuse;
+}
+
+#inputImage{
+    opacity: 0;
+}
+.remove{
+    position: relative;
+    bottom: 43px;
+    right: 10px;
+    font-size: 10px;
+    height: 20px;
+    width: 21px;
+    background-color: black;
+    padding: 0px 0px;
+    color: #cd3535;
+    border-radius: 55px;
+    border-color: #e8dadb;
+
+}
+aside img{
+    object-fit: contain;
+    width: 90%;
+    height: 477px;
+    margin: 0px 14px 0px 34px;
+}
+aside button{
+    position: fixed;
+    top: 54px;
+    height: 450px;
+    opacity: .5;
+    background-color: inherit;
+    color: gray;
+    border: 0px;
+}
+div{
+    width: 1109px;
+    overflow: auto;
+    overflow-y: hidden;
+    overflow-x:auto;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 0px 10px 0px  90px;
+}
+div.slide  img{
+    object-fit: contain;
+    border: solid 2px;
+    border-color: aliceblue;
+    height: 70px;
+    width: 70px;
+}
+.slide img{
+    height: 90px;
+    width: 90px;
+    margin-bottom: 20px;
+    border-color: red;
+    margin-top: 10px;
 }
