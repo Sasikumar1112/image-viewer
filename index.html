@@ -9,17 +9,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <nav class="navigation" >
-        <label for="inputImage"><img src="images/upload.png" alt="Upload Image"></label>
+    <div class="displayArea" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+        <label for="inputImage" id="displayLabel"><img id="display-image"src="https://static.vecteezy.com/system/resources/previews/009/992/364/non_2x/add-icon-sign-symbol-design-free-png.png" alt="Upload Image" title="Upload image Or Drag and Drop" ></label>
         <input type="file" id="inputImage" name="inputImage" title="Upload images" accept="image/*" multiple/>
-        <p  ondrop="drop_handler(event);" ondragover="dragover_handler(event);">Drag and Drop here</p>
-    </nav>
-    <aside class="image-file">
-        <button id="previous">&lt</button>
-        <img id="display-image"src="images/image.png" alt="Image">
-        <button id="next">&gt</button>
-    </aside>
-    <div class="slide">
+    </div>
+    <div class="slide" ondrop="drop_handler(event);" ondragover="dragover_handler(event);">
+        <div id="slideInput" class="container">
+            <input id="sInput" type="file" title="Upload images" accept="image/*" multiple/>
+            <!-- <label for="sInput"><i class="fa fa-plus"></i></label> -->
+        </div>
     </div>
     <script src="scripts/main.js"></script>
     <!-- adding <script></script> in body is better -->
