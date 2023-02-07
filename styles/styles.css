@@ -48,6 +48,7 @@ input{
 .container{
     height: 131px;
     width: 196px;
+    flex-shrink: 0;
 }
 .container img{
     cursor: pointer;
