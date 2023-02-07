@@ -1,6 +1,6 @@
-let image=document.querySelector('img[id="display-image"]');
-let nav=document.querySelector('nav');
-let div=document.querySelector('div');
+let displayImage=document.querySelector('img[id="display-image"]');
+let slideInput=document.getElementById('slideInput');
+let slide=document.querySelector('div.slide');
 const images=[];
 let index=0;
             // Drag and drop
@@ -15,26 +15,29 @@ function drop_handler(ev) {
     for(const file of files){
         addImage(file);
     }
-    image.src=images[index];
+    displayImage.src=images[index];
     change();
     }
 
 window.onload=function(){
             // File input
-    let input=document.querySelector('input[id="inputImage"]');
-    input.addEventListener('change',()=>{
-        const curFiles=input.files;
-        if(curFiles.length===0){
-            alert('No file selected');
-        }
-        else{
-            for(const file of curFiles){
-                addImage(file);
+    let input=document.querySelectorAll('input');
+    input.forEach(ip=>{
+        ip.addEventListener('change',()=>{
+            const curFiles=ip.files;
+            if(curFiles.length===0){
+                alert('No file selected');
             }
-            image.src=images[index];
-            change();
-        }
+            else{
+                for(const file of curFiles){
+                    addImage(file);
+                }
+                displayImage.src=images[index];
+                change();
+            }
+        });
     });
+
     //on keyboard move
     window.addEventListener("keyup",(e)=>{
         if(images.length!==0){
@@ -48,91 +51,101 @@ window.onload=function(){
         }
     });
     //lt gt buttons
-    let lt=document.getElementById("previous");
-    lt.addEventListener('click',previous);
-    let gt=document.getElementById("next");
-    gt.addEventListener('click',next);
+    // let lt=document.getElementById("previous");
+    // lt.addEventListener('click',previous);
+    // let gt=document.getElementById("next");
+    // gt.addEventListener('click',next);
 }
 
 
 function addImage(file){
     //Add images in slides
-    const imgSlide =document.createElement('img');
-    imgSlide.className="slide";
-    imgSlide.alt=file.name;
+    const container=document.createElement('div');
+    container.className="container";
+    const slideImages =document.createElement('img');
+    slideImages.alt=file.name;
     let url=URL.createObjectURL(file);
-    imgSlide.src=url;
+    slideImages.src=url;
+    slideImages.style.backgroundImage="url('"+url+"')"
+    // slideImages.style.back="blur(3px)";
     images.push(url);
-    div.appendChild(imgSlide);
+    container.appendChild(slideImages);
         //click event
-    imgSlide.addEventListener('click',()=>{
-        index=images.indexOf(imgSlide.src);
-        image.src=images[index];
+    slideImages.addEventListener('click',()=>{
+        index=images.indexOf(slideImages.src);
+        displayImage.src=images[index];
         change();
     });
-        //remove button
+        
+    const crossDiv =document.createElement('div');
+    crossDiv.className='crossBar';
+    const name =document.createElement('label');
+    name.textContent=file.name;
+    crossDiv.append(name);
+    //remove button
     const remove =document.createElement('button');
     const i=document.createElement('i');
-    i.className="fa fa-trash";
+    i.className="fa fa-close";
     remove.value=url;
-    remove.className='remove';
-    div.append(remove);
     remove.append(i);
-        //Removing an image
+    crossDiv.append(remove);
+    container.appendChild(crossDiv);
+    slide.insertBefore(container,slideInput);
+        //Removing an displayImage
     remove.addEventListener('click',()=>{
         let previousLength=images.length;
         const removeIndex=images.indexOf(remove.value);
         images.splice(removeIndex,1);
-        div.removeChild(imgSlide);
-        remove.removeChild(i);
-        div.removeChild(remove);
+        slide.removeChild(container);
         if(removeIndex===previousLength-1){
             index=0;
         }
-        //if previous image is deleted
+        //if previous displayImage is deleted
         if(removeIndex<=index){
             index--;
         }
-        image.src=images[index];
+        displayImage.src=images[index];
         change();
     });
 }
 
 function change(){
         //Changing appearance of selected and not selected      
-    let currentImg=document.querySelectorAll('img.slide');
+    let currentImg=document.querySelectorAll('div.container img');
     for(let i=0;i<currentImg.length;i++){
         if(currentImg[i].src===images[index]){
-            currentImg[i].style.height="90px";
-            currentImg[i].style.width="90px";
-            currentImg[i].style.marginBottom="20px";
-            currentImg[i].style.borderColor="green";
             // currentImg[i].focus();
+            currentImg[i].style.borderColor="yellow";
         }
         else{
-            currentImg[i].style.height="70px";
-            currentImg[i].style.width="70px";
-            currentImg[i].style.borderColor="white";
+            currentImg[i].style.borderColor="inherit";
         }
     }
+    let input1=document.getElementById("inputImage");
     if(images.length===0){
-        image.src="images/image.png";
+        input1.disabled=false;
+        displayImage.title="Upload Image or Drag and Drop";
+        displayImage.style.height="400px";84,90
+        displayImage.style.width="745px";
+        displayImage.src="https://static.vecteezy.com/system/resources/previews/009/992/364/non_2x/add-icon-sign-symbol-design-free-png.png";
+        index=0;
     }
-
+    else{
+        displayImage.title="";
+        displayImage.style.height="455px";//95-95
+        displayImage.style.width="785px";
+        input1.disabled=true;
+        //add lt gt button
+    }
 }
         //Slide moves
 function previous(){
-    console.log("At previous");
-    console.log(images);
     const l=images.length;
-    console.log(l);
-    console.log(index===0);
     if(index===0){
         index=l;
     }
     index--;
-    console.log(index);
-    image.src=images[index];
+    displayImage.src=images[index];
     change();
 }
 function next(){
@@ -140,6 +153,6 @@ function next(){
         index=-1;
     }
     index++;
-    image.src=images[index];
+    displayImage.src=images[index];
     change();
 }
