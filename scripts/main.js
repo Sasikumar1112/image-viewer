@@ -101,7 +101,7 @@ function addImage(file){
             index=0;
         }
         //if previous displayImage is deleted
-        if(removeIndex<=index){
+        else if(removeIndex<index){
             index--;
         }
         displayImage.src=images[index];
