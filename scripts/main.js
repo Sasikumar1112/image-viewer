@@ -1,9 +1,13 @@
 let displayImage=document.querySelector('img[id="display-image"]');
 let slideInput=document.getElementById('slideInput');
 let slide=document.querySelector('div.slide');
-const images=[];
+var images=[];//store name a.k. key 
 let index=0;
-            // Drag and drop
+if(localStorage.getItem('images')){
+    images=JSON.parse(localStorage.getItem('images'));
+    console.log("image got from local storage: "+images);
+}
+    // Drag and drop
 function dragover_handler(ev) {
     ev.preventDefault();
     ev.dataTransfer.dropEffect = "copy";
@@ -17,7 +21,7 @@ function drop_handler(ev) {
     }
     displayImage.src=images[index];
     change();
-    }
+}
 
 window.onload=function(){
             // File input
@@ -26,18 +30,24 @@ window.onload=function(){
         ip.addEventListener('change',()=>{
             const curFiles=ip.files;
             if(curFiles.length===0){
-                alert('No file selected');
+                console.log('No file selected');
             }
             else{
                 for(const file of curFiles){
                     addImage(file);
                 }
-                displayImage.src=images[index];
-                change();
             }
         });
     });
-
+        //Slider
+    for(var name of images){
+        slider(name);
+    }
+        //images already in local storage
+    if(images.length!==0){
+        displayImage.src=localStorage.getItem(images[index]);
+        change();
+    }
     //on keyboard move
     window.addEventListener("keyup",(e)=>{
         if(images.length!==0){
@@ -50,43 +60,53 @@ window.onload=function(){
             }
         }
     });
-    //lt gt buttons
-    // let lt=document.getElementById("previous");
-    // lt.addEventListener('click',previous);
-    // let gt=document.getElementById("next");
-    // gt.addEventListener('click',next);
 }
 
-
 function addImage(file){
-    //Add images in slides
+        //storing using reader, reader result only works on load
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.addEventListener('load',()=>{
+        if(images.includes(file.name)){
+            console.log("image already included");
+        }
+        else{
+            localStorage.setItem(file.name,reader.result);
+            images.push(file.name);
+            localStorage.setItem('images',JSON.stringify(images));
+            slider(file.name);
+        }
+    });
+
+}
+
+function slider(fileName){
+        //Add images in slides
     const container=document.createElement('div');
     container.className="container";
     const slideImages =document.createElement('img');
-    slideImages.alt=file.name;
-    let url=URL.createObjectURL(file);
-    slideImages.src=url;
-    slideImages.style.backgroundImage="url('"+url+"')"
-    // slideImages.style.back="blur(3px)";
-    images.push(url);
+    slideImages.alt=fileName;
+    var source=localStorage.getItem(fileName);
+    slideImages.src=source;
+    slideImages.style.backgroundImage="url('"+source+"')"
     container.appendChild(slideImages);
         //click event
     slideImages.addEventListener('click',()=>{
-        index=images.indexOf(slideImages.src);
-        displayImage.src=images[index];
+        index=images.indexOf(fileName);
+        displayImage.src=localStorage.getItem(images[index]);
         change();
     });
         
     const crossDiv =document.createElement('div');
     crossDiv.className='crossBar';
     const name =document.createElement('label');
-    name.textContent=file.name;
+    name.textContent=fileName;
     crossDiv.append(name);
     //remove button
     const remove =document.createElement('button');
     const i=document.createElement('i');
     i.className="fa fa-close";
-    remove.value=url;
+    remove.value=fileName;
     remove.append(i);
     crossDiv.append(remove);
     container.appendChild(crossDiv);
@@ -97,6 +117,8 @@ function addImage(file){
         const removeIndex=images.indexOf(remove.value);
         images.splice(removeIndex,1);
         slide.removeChild(container);
+        localStorage.removeItem(fileName);
+        localStorage.setItem('images',JSON.stringify(images));
         if(removeIndex===previousLength-1){
             index=0;
         }
@@ -104,16 +126,15 @@ function addImage(file){
         else if(removeIndex<index){
             index--;
         }
-        displayImage.src=images[index];
+        displayImage.src=localStorage.getItem(images[index]);
         change();
     });
 }
-
 function change(){
         //Changing appearance of selected and not selected      
     let currentImg=document.querySelectorAll('div.container img');
     for(let i=0;i<currentImg.length;i++){
-        if(currentImg[i].src===images[index]){
+        if(currentImg[i].alt===images[index]){
             // currentImg[i].focus();
             currentImg[i].style.borderColor="yellow";
         }
@@ -145,7 +166,7 @@ function previous(){
         index=l;
     }
     index--;
-    displayImage.src=images[index];
+    displayImage.src=localStorage.getItem(images[index]);
     change();
 }
 function next(){
@@ -153,6 +174,6 @@ function next(){
         index=-1;
     }
     index++;
-    displayImage.src=images[index];
+    displayImage.src=localStorage.getItem(images[index]);
     change();
 }
