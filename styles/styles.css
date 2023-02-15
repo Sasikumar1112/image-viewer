@@ -5,7 +5,7 @@ body{
 }
 .displayArea{
     align-items: center;
-    margin: 1% 20% 3%;
+    margin: 3% 20% 3%;
     align-self: center;
     color: aqua;
     align-items: center;
@@ -36,10 +36,10 @@ input{
 .slide {
     margin: 0% 4.5%;
     position: fixed;
-    bottom: 2%;
+    bottom: 3%;
     z-index: 3;
     width: 90%;
-    height: 20%;
+    height: 133px;
     overflow-x: auto;
     overflow-y: hidden;
     display: flex;
@@ -47,7 +47,7 @@ input{
 }
 .container{
     height: 131px;
-    width: 196px;
+    width: 198px;
     flex-shrink: 0;
 }
 .container img{
@@ -86,7 +86,7 @@ div.crossBar {
     text-overflow: ellipsis;
     display: inline-block;
     overflow: hidden;
-    width: 171px;
+    width: 173px;
     height: 20px;
     background-color: black;
     color: wheat;
@@ -102,7 +102,7 @@ div.crossBar {
     padding: 0% 0%;
     color: #cd3535;
     border: 0px;
-    right: 5px;
+    right: 7px;
     /* left: 173px;
     bottom: 139px; */
 }

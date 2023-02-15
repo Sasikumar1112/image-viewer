@@ -1,13 +1,18 @@
 let displayImage=document.querySelector('img[id="display-image"]');
 let slideInput=document.getElementById('slideInput');
 let slide=document.querySelector('div.slide');
-var images=[];//store name a.k. key 
+const aReq = new XMLHttpRequest();
+var images=[];
+var imageNames=[];
+aReq.open("POST","GetImageList",false);
+aReq.addEventListener('load',()=>{
+    //get image names in server
+	imageNames=JSON.parse(aReq.getResponseHeader("images"));
+	console.log(imageNames);
+});
+aReq.send();
 let index=0;
-if(localStorage.getItem('images')){
-    images=JSON.parse(localStorage.getItem('images'));
-    console.log("image got from local storage: "+images);
-}
-    // Drag and drop
+            // Drag and drop
 function dragover_handler(ev) {
     ev.preventDefault();
     ev.dataTransfer.dropEffect = "copy";
@@ -21,33 +26,30 @@ function drop_handler(ev) {
     }
     displayImage.src=images[index];
     change();
-}
+    }
 
 window.onload=function(){
+    loadImages();
             // File input
     let input=document.querySelectorAll('input');
     input.forEach(ip=>{
         ip.addEventListener('change',()=>{
             const curFiles=ip.files;
-            if(curFiles.length===0){
-                console.log('No file selected');
-            }
-            else{
+            if(curFiles.length!==0){
                 for(const file of curFiles){
-                    addImage(file);
+                    if(imageNames.includes(file.name)){
+                        alert("Image already exist");
+                    }
+                    else{
+                        addImage(file);
+                    }
                 }
+                displayImage.src=images[index];
+                change();
             }
         });
     });
-        //Slider
-    for(var name of images){
-        slider(name);
-    }
-        //images already in local storage
-    if(images.length!==0){
-        displayImage.src=localStorage.getItem(images[index]);
-        change();
-    }
+
     //on keyboard move
     window.addEventListener("keyup",(e)=>{
         if(images.length!==0){
@@ -61,80 +63,92 @@ window.onload=function(){
         }
     });
 }
-
-function addImage(file){
-        //storing using reader, reader result only works on load
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.addEventListener('load',()=>{
-        if(images.includes(file.name)){
-            console.log("image already included");
-        }
-        else{
-            localStorage.setItem(file.name,reader.result);
-            images.push(file.name);
-            localStorage.setItem('images',JSON.stringify(images));
-            slider(file.name);
-        }
-    });
-
+function loadImages(){
+	console.log("At load Images");
+	console.log(imageNames);
+    for(var name of imageNames){
+        addToSlider(name,"images/"+name)
+    }
+    displayImage.src=images[index];
+    change();
 }
 
-function slider(fileName){
+function addImage(file){
+        //Store in server
+    const inputData =new FormData();
+    console.log(file);
+    var fileName =file.name;
+    inputData.append(fileName,file);
+    const req = new XMLHttpRequest();
+    req.open("POST","ImageInputServlet",false);
+    req.send(inputData);
+        //Adding in slider
+    let url=URL.createObjectURL(file);
+    addToSlider(fileName,url);
+    imageNames.push(fileName);
+
+}
+function addToSlider(fileName,url){
         //Add images in slides
-    const container=document.createElement('div');
-    container.className="container";
-    const slideImages =document.createElement('img');
-    slideImages.alt=fileName;
-    var source=localStorage.getItem(fileName);
-    slideImages.src=source;
-    slideImages.style.backgroundImage="url('"+source+"')"
-    container.appendChild(slideImages);
-        //click event
-    slideImages.addEventListener('click',()=>{
-        index=images.indexOf(fileName);
-        displayImage.src=localStorage.getItem(images[index]);
-        change();
-    });
-        
-    const crossDiv =document.createElement('div');
-    crossDiv.className='crossBar';
-    const name =document.createElement('label');
-    name.textContent=fileName;
-    crossDiv.append(name);
-    //remove button
-    const remove =document.createElement('button');
-    const i=document.createElement('i');
-    i.className="fa fa-close";
-    remove.value=fileName;
-    remove.append(i);
-    crossDiv.append(remove);
-    container.appendChild(crossDiv);
-    slide.insertBefore(container,slideInput);
-        //Removing an displayImage
-    remove.addEventListener('click',()=>{
-        let previousLength=images.length;
-        const removeIndex=images.indexOf(remove.value);
-        images.splice(removeIndex,1);
-        slide.removeChild(container);
-        localStorage.removeItem(fileName);
-        localStorage.setItem('images',JSON.stringify(images));
-        if(removeIndex===previousLength-1){
-            index=0;
-        }
-        //if previous displayImage is deleted
-        else if(removeIndex<index){
-            index--;
-        }
-        displayImage.src=localStorage.getItem(images[index]);
-        change();
-    });
+        const container=document.createElement('div');
+        container.className="container";
+        const slideImages =document.createElement('img');
+        slideImages.alt=fileName;
+        slideImages.src=url;
+        slideImages.style.backgroundImage="url('"+url+"')"
+        // slideImages.style.back="blur(3px)";
+        images.push(url);
+        container.appendChild(slideImages);
+            //click event
+        slideImages.addEventListener('click',()=>{
+            index=imageNames.indexOf(fileName);
+            console.log("index clicked:"+index);
+            displayImage.src=images[index];
+            change();
+        });
+            
+        const crossDiv =document.createElement('div');
+        crossDiv.className='crossBar';
+        const name =document.createElement('label');
+        name.textContent=fileName;
+        crossDiv.append(name);
+        //remove button
+        const remove =document.createElement('button');
+        const i=document.createElement('i');
+        i.className="fa fa-close";
+        remove.value=fileName;
+        remove.append(i);
+        crossDiv.append(remove);
+        container.appendChild(crossDiv);
+        slide.insertBefore(container,slideInput);
+            //Removing an displayImage
+        remove.addEventListener('click',()=>{
+                        //Removing at server storage
+            const deleteReq = new XMLHttpRequest();
+            deleteReq.open("POST","DeleteImageServlet",false);
+            deleteReq.setRequestHeader("fileName",fileName)
+            deleteReq.send();
+            let previousLength=images.length;
+            const removeIndex=imageNames.indexOf(remove.value);
+            images.splice(removeIndex,1);
+            imageNames.splice(removeIndex,1);
+            slide.removeChild(container);
+            if(removeIndex===previousLength-1){
+                index=0;
+            }
+            //if previous displayImage is deleted
+            else if(removeIndex<index){
+                index--;
+            }
+            displayImage.src=images[index];
+            change();
+        });
 }
 function change(){
         //Changing appearance of selected and not selected      
     let currentImg=document.querySelectorAll('div.container img');
     for(let i=0;i<currentImg.length;i++){
-        if(currentImg[i].alt===images[index]){
+        if(currentImg[i].alt===imageNames[index]){
             // currentImg[i].focus();
             currentImg[i].style.borderColor="yellow";
         }
@@ -166,7 +180,7 @@ function previous(){
         index=l;
     }
     index--;
-    displayImage.src=localStorage.getItem(images[index]);
+    displayImage.src=images[index];
     change();
 }
 function next(){
@@ -174,6 +188,6 @@ function next(){
         index=-1;
     }
     index++;
-    displayImage.src=localStorage.getItem(images[index]);
+    displayImage.src=images[index];
     change();
 }
