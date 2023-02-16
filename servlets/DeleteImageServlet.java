@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,10 +37,17 @@ public class DeleteImageServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String password = null;
+		Cookie[] cookies = request.getCookies();
+		for (Cookie cookie : cookies) {
+			if(cookie.getName().equals("password")) {
+				password=cookie.getValue();
+			}
+		}
 		String fileName=request.getHeader("fileName");
 		String s=getServletContext().getRealPath("/");
 		System.out.println("Current path at delete got is: " + s);
-		File f= new File(s+"images/"+fileName);
+		File f= new File(s+"images/"+password+"/"+fileName);
 		System.out.println(f.exists());
 		System.out.println("File Deleted: "+fileName);
 		f.delete();

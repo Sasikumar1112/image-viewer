@@ -4,13 +4,6 @@ let slide=document.querySelector('div.slide');
 const aReq = new XMLHttpRequest();
 var images=[];
 var imageNames=[];
-aReq.open("POST","GetImageList",false);
-aReq.addEventListener('load',()=>{
-    //get image names in server
-	imageNames=JSON.parse(aReq.getResponseHeader("images"));
-	console.log(imageNames);
-});
-aReq.send();
 let index=0;
             // Drag and drop
 function dragover_handler(ev) {
@@ -29,7 +22,18 @@ function drop_handler(ev) {
     }
 
 window.onload=function(){
-    loadImages();
+    var msg="Enter the Password";
+    let password=getPassword(msg);
+    const cookieString="password="+password+"; path=/";
+    document.cookie=cookieString;
+        //get image names in server
+    aReq.open("POST","GetImageList",false);
+    aReq.addEventListener('load',()=>{
+        imageNames=JSON.parse(aReq.getResponseHeader("images"));
+        console.log(imageNames);
+    });
+    aReq.send();
+    loadImages(password);
             // File input
     let input=document.querySelectorAll('input');
     input.forEach(ip=>{
@@ -49,7 +53,6 @@ window.onload=function(){
             }
         });
     });
-
     //on keyboard move
     window.addEventListener("keyup",(e)=>{
         if(images.length!==0){
@@ -63,11 +66,19 @@ window.onload=function(){
         }
     });
 }
-function loadImages(){
-	console.log("At load Images");
-	console.log(imageNames);
+function getPassword(msg){
+    pwd=prompt(msg);
+    if(pwd==null || pwd==""){
+        msg="No password Entered!\nEnter the Password";
+        return getPassword(msg);
+    }
+    else{
+        return pwd;
+    }
+}
+function loadImages(password){
     for(var name of imageNames){
-        addToSlider(name,"images/"+name)
+        addToSlider(name,"images/"+password+"/"+name)
     }
     displayImage.src=images[index];
     change();
@@ -76,7 +87,6 @@ function loadImages(){
 function addImage(file){
         //Store in server
     const inputData =new FormData();
-    console.log(file);
     var fileName =file.name;
     inputData.append(fileName,file);
     const req = new XMLHttpRequest();
@@ -86,7 +96,6 @@ function addImage(file){
     let url=URL.createObjectURL(file);
     addToSlider(fileName,url);
     imageNames.push(fileName);
-
 }
 function addToSlider(fileName,url){
         //Add images in slides
@@ -102,7 +111,6 @@ function addToSlider(fileName,url){
             //click event
         slideImages.addEventListener('click',()=>{
             index=imageNames.indexOf(fileName);
-            console.log("index clicked:"+index);
             displayImage.src=images[index];
             change();
         });

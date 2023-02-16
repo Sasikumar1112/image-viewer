@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,10 +47,20 @@ public class GetImageList extends HttpServlet {
 //		for (String envName : env.keySet()) { 
 //            System.out.format("%s = %s%n", envName, env.get(envName)); 
 //        } 
+		String password = null;
+		Cookie[] cookies = request.getCookies();
+		for (Cookie cookie : cookies) {
+			if(cookie.getName().equals("password")) {
+				password=cookie.getValue();
+			}
+		}
 		List<String> list=new ArrayList<String>();
 		String s=getServletContext().getRealPath("/");
 		System.out.println("Current path I got is: " + s);
-		File f= new File(s+"images/");
+		File f= new File(s+"images/"+password+"/");
+		if(!f.exists()) {
+			f.mkdir();
+		}
 		System.out.println(f.exists());
 		String[] paths = f.list();
         for(String path:paths) {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,12 +42,19 @@ public class ImageInputServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String password = null;
+		Cookie[] cookies = request.getCookies();
+		for (Cookie cookie : cookies) {
+			if(cookie.getName().equals("password")) {
+				password=cookie.getValue();
+			}
+		}
 		try {
 			String s=getServletContext().getRealPath("/");
 			System.out.println("Current path I got is: " + s);
 		    for (Part part : request.getParts()) {
 		      String fileName=part.getSubmittedFileName();
-		      part.write(s+"images/"+fileName);
+		      part.write(s+"images/"+password+"/"+fileName);
 		      System.out.println("File Added: "+fileName);
 		    }
 		}catch(Exception e){
